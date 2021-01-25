@@ -6,4 +6,8 @@
     <RootNamespace>Bank_Architecture_</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BankArchitecture.Common\BankArchitecture.Common.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,12 +1,12 @@
-﻿using System;
+﻿using BankArchitecture.Runners;
 
-namespace Bank_Architecture_
+namespace BankArchitecture
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Startup.Start();
         }
     }
 }
