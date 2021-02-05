@@ -1,80 +1,35 @@
 ﻿using BankArchitecture.Common.Enums;
 using BankArchitecture.Common.Models;
+using BankArchitecture.Notifiers;
 using BankArchitecture.Providers;
 using BankArchitecture.Resources;
+using Microsoft.Extensions.Hosting;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BankArchitecture.Runners
 {
-    public static class Startup
+    public class Startup : BackgroundService
     {
-        public static void Start()
+        private readonly INotifier notifier;
+        private readonly IRunner runner;
+
+        public Startup(INotifier notifier, IRunner runner)
         {
-            ConsoleProvider consoleProvider = new ConsoleProvider();
+            this.notifier = notifier;
+            this.runner = runner;
+        }
 
-            consoleProvider.ShowMessage(StringConstans.Welcome);
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            notifier.Notify("Debug: Start program from ConsoleRunner.");
+            await runner.RunAsync(stoppingToken);
+            notifier.Notify("Program End.");
+        }
 
-            string name;
-
-            while (true)
-            {
-                name = consoleProvider.InputStringValue();
-
-                if (string.IsNullOrWhiteSpace(name))
-                {
-                    consoleProvider.ShowMessage(StringConstans.IncorrectInput);
-                }
-                else
-                {
-                    StaticBank.Name = name;
-                    break;
-                }
-            }
-
-            while (true)
-            {
-                switch ((BankFunctions)consoleProvider.InputValue(StringConstans.ChooseBankAction))
-                {
-                    case BankFunctions.AddAccount:
-                        break;
-
-                    case BankFunctions.AddMoneyToBalance:
-                        break;
-
-                    case BankFunctions.DeleteAccount:
-                        
-                        break;
-
-                    case BankFunctions.ShowBalance:
-                        consoleProvider.ShowMessage(StaticBank.Balance.ToString());
-                        break;
-
-                    case BankFunctions.RenamedBank:
-
-                        consoleProvider.ShowMessage(StringConstans.InputName);
-
-                        while (true)
-                        {
-                            name = consoleProvider.InputStringValue();
-
-                            if (string.IsNullOrEmpty(name))
-                            {
-                                consoleProvider.ShowMessage(StringConstans.IncorrectInput);
-                            }
-                            else
-                            {
-                                StaticBank.Name = name;
-                                break;
-                            }
-                        }
-
-                        StaticBank.Name = name;
-                        break;
-
-                    default:
-                        consoleProvider.ShowMessage(StringConstans.IncorrectInput);
-                        break;
-                }
-            }
+        public void Close(CancellationToken stoppingToken)
+        {
+            StopAsync(stoppingToken);
         }
     }
 }

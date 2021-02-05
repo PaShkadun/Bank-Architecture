@@ -2,9 +2,5 @@
 {
     public class DebitAccount : Account
     {
-        public DebitAccount()
-        {
-
-        }
     }
 }

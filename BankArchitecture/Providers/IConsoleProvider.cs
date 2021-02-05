@@ -1,4 +1,6 @@
-﻿namespace BankArchitecture.Providers
+﻿using BankArchitecture.Common.Enums;
+
+namespace BankArchitecture.Providers
 {
     public interface IConsoleProvider
     {
@@ -7,5 +9,7 @@
         public int InputValue(string message);
 
         public string InputStringValue();
+
+        public TypeOfObject ChooseTypeOfObject();
     }
 }

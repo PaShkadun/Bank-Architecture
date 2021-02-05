@@ -10,14 +10,9 @@ namespace BankArchitecture.Common
 
         public List<Card> Cards { get; set; }
 
-        public Account(int money)
-        {
-            Balance = money;
-        }
-
         public Account()
         {
-            
+            Cards = new List<Card>();
         }
     }
 }

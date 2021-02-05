@@ -8,7 +8,7 @@ namespace BankArchitecture.Common
 
         public CreditCard()
         {
-
+            Credits = new List<Credit>();
         }
     }
 }

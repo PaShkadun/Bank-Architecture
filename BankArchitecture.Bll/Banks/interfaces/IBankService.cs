@@ -1,5 +1,4 @@
-﻿using BankArchitecture.Common;
-using BankArchitecture.Common.Enums;
+﻿using BankArchitecture.Common.Enums;
 
 namespace BankArchitecture.Bll.Bank.interfaces
 {
@@ -11,6 +10,6 @@ namespace BankArchitecture.Bll.Bank.interfaces
 
         public string GetAccountsInfo();
 
-        public bool TransferMoneyToAccount(Account pullAccount, Account pushAccount, int sum);
+        public bool TransferMoneyToAccount(int indexAccount, int sum);
     }
 }

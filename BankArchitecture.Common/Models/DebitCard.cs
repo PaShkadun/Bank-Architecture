@@ -2,9 +2,5 @@
 {
     public class DebitCard : Card
     {
-        public DebitCard()
-        {
-
-        }
     }
 }

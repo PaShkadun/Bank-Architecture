@@ -1,5 +1,4 @@
-﻿using System;
-using BankArchitecture.Bll.Bank.interfaces;
+﻿using BankArchitecture.Bll.Bank.interfaces;
 using BankArchitecture.Common.Enums;
 using BankArchitecture.Common.Models;
 using BankArchitecture.Common;
@@ -12,27 +11,27 @@ namespace BankArchitecture.Bll.Bank.Implementations
         {
             if(type == TypeOfObject.Credit)
             {
-                StaticBank.Accounts.Add(new CreditAccount());
+                MainBank.Accounts.Add(new CreditAccount());
             }
             else
             {
-                StaticBank.Accounts.Add(new DebitAccount());
+                MainBank.Accounts.Add(new DebitAccount());
             }
         }
 
         public bool DeleteAccount(int chooseAccount)
         {
-            if (chooseAccount < 0 && chooseAccount >= StaticBank.Accounts.Count)
+            if (chooseAccount < 0 && chooseAccount >= MainBank.Accounts.Count)
             {
-                throw new NotImplementedException();
+                return false;
             }
-            else if (StaticBank.Accounts[chooseAccount].Cards.Count != 0)
+            else if (MainBank.Accounts[chooseAccount].Cards.Count != 0)
             {
-                throw new NotImplementedException();
+                return false;
             }
             else
             {
-                StaticBank.Accounts.RemoveAt(chooseAccount);
+                MainBank.Accounts.RemoveAt(chooseAccount);
 
                 return true;
             }
@@ -40,37 +39,38 @@ namespace BankArchitecture.Bll.Bank.Implementations
 
         public string GetAccountsInfo()
         {
-            if (StaticBank.Accounts.Count == 0)
+            if (MainBank.Accounts.Count == 0)
             {
-                throw new NotImplementedException();
+                return string.Empty;
             }
             else
             {
                 string accountInfo = string.Empty;
+                int countCards = 0;
 
-                foreach (Account account in StaticBank.Accounts)
+                foreach (Account account in MainBank.Accounts)
                 {
-                    accountInfo += $"{account.Id} {account.Balance}\n";
+                    accountInfo += $"{countCards++}. {account.Id} {account.Balance}\n";
                 }
 
                 return accountInfo;
             }
         }
 
-        public bool TransferMoneyToAccount(Account pullAccount, Account pushAccount, int sum)
+        public bool TransferMoneyToAccount(int indexAccount, int sum)
         {
-            if (pullAccount == pushAccount)
+            if (indexAccount > MainBank.Accounts.Count - 1 || indexAccount < 0)
             {
-                throw new NotImplementedException();
+                return false;
             }
-            else if (pullAccount.Balance < sum)
+            else if (sum > MainBank.Balance)
             {
-                throw new NotImplementedException();
+                return false;
             }
             else
             {
-                pullAccount.Balance -= sum;
-                pushAccount.Balance += sum;
+                MainBank.Accounts[indexAccount].Balance += sum;
+                MainBank.Balance -= sum;
 
                 return true;
             }

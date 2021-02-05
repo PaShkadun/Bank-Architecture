@@ -4,5 +4,6 @@
     {
         Debit = 1,
         Credit = 2,
+        Incorrect = 0,
     }
 }
