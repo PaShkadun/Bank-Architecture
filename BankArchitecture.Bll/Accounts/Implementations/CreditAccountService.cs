@@ -58,7 +58,7 @@ namespace BankArchitecture.Bll.Accounts.Implementations
             {
                 string cardsInfo = string.Empty;
 
-                foreach(CreditCard card in account.Cards)
+                foreach (CreditCard card in account.Cards)
                 {
                     cardsInfo += $"{card.Id} {card.Balance} {card.Credits.Count}\n";
                 }

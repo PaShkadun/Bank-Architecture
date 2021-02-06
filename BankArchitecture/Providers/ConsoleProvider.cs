@@ -12,7 +12,7 @@ namespace BankArchitecture.Providers
         {
             int choose = InputValue(StringConstans.TypeOfObject);
         
-            if(choose > (int)TypeOfObject.Credit || choose < (int)TypeOfObject.Debit)
+            if (choose > (int)TypeOfObject.Credit || choose < (int)TypeOfObject.Debit)
             {
                 ShowMessage(StringConstans.IncorrectInput);
 

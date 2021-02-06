@@ -9,20 +9,20 @@ namespace BankArchitecture.Providers
     public class BankProvider : IBankProvider
     {
         private readonly IBankService service;
-        //private readonly IAccountProvider accountProvider;
+        // private readonly IAccountProvider accountProvider;
         private readonly IConsoleProvider consoleProvider;
         private MainBank bank;
 
         public BankProvider(IBankService service, IConsoleProvider consoleProvider)
         {
             this.service = service;
-            //this.accountProvider = accountProvider;
+            // this.accountProvider = accountProvider;
             this.consoleProvider = consoleProvider;
         }
 
         public void Start(int choose)
         {
-            switch(choose)
+            switch (choose)
             {
                 case 1: 
                     //bank = new MainBank();

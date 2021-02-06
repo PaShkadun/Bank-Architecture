@@ -9,7 +9,7 @@ namespace BankArchitecture.Bll.Bank.Implementations
     {
         public void AddAccount(TypeOfObject type)
         {
-            if(type == TypeOfObject.Credit)
+            if (type == TypeOfObject.Credit)
             {
                 MainBank.Accounts.Add(new CreditAccount());
             }
