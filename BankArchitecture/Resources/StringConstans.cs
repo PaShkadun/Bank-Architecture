@@ -4,7 +4,7 @@
     {
         public const string Welcome = "Welcome to The Bank.  Please, write name of Bank.";
         public const string IncorrectInput = "Incorrect";
-        public const string ChooseBankAction =  "1. Add Account\n2. Delete Account\n3. Get info about accounts\n4. Show Balance" +
+        public const string ChooseActionOfBank =  "1. Add Account\n2. Delete Account\n3. Get info about accounts\n4. Show Balance" +
                                                 "\n5. Add Money To Balance\n6. Transfer money to account";
         public const string InputName = "Input name";
         public const string InputValue = "Input value";

@@ -47,7 +47,7 @@ namespace BankArchitecture.Providers
 
             while (choose != 0)
             {
-                choose = consoleProvider.InputValue(StringConstans.ChooseBankAction);
+                choose = consoleProvider.InputValue(StringConstans.ChooseActionOfBank);
 
                 switch ((BankFunctions)choose)
                 {

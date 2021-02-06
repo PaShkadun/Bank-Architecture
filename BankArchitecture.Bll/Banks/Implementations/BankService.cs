@@ -57,9 +57,9 @@ namespace BankArchitecture.Bll.Bank.Implementations
             }
         }
 
-        public bool TransferMoneyToAccount(int indexAccount, int sum)
+        public bool TransferMoneyToAccount(int accountIndex, int sum)
         {
-            if (indexAccount > MainBank.Accounts.Count - 1 || indexAccount < 0)
+            if (accountIndex > MainBank.Accounts.Count - 1 || accountIndex < 0)
             {
                 return false;
             }
@@ -69,7 +69,7 @@ namespace BankArchitecture.Bll.Bank.Implementations
             }
             else
             {
-                MainBank.Accounts[indexAccount].Balance += sum;
+                MainBank.Accounts[accountIndex].Balance += sum;
                 MainBank.Balance -= sum;
 
                 return true;

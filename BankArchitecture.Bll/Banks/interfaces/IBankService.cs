@@ -10,6 +10,6 @@ namespace BankArchitecture.Bll.Bank.interfaces
 
         public string GetAccountsInfo();
 
-        public bool TransferMoneyToAccount(int indexAccount, int sum);
+        public bool TransferMoneyToAccount(int accountIndex, int sum);
     }
 }
