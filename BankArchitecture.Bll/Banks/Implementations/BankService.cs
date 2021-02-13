@@ -2,44 +2,46 @@
 using BankArchitecture.Common.Enums;
 using BankArchitecture.Common.Models;
 using BankArchitecture.Common;
+using BankArchitecture.Dal;
+using BankArchitecture.Bll.Random.Implementations;
 
 namespace BankArchitecture.Bll.Bank.Implementations
 {
     public class BankService : IBankService
     {
-        public void AddAccount(TypeOfObject type)
+        public void AddAccount(MainBank bank, TypeOfAccount type)
         {
-            if (type == TypeOfObject.Credit)
+            if (type == TypeOfAccount.Credit)
             {
-                MainBank.Accounts.Add(new CreditAccount());
+                bank.Accounts.Add(new CreditAccount() { Id = CustomRandom.RandomAccountNumber() }) ;
             }
             else
             {
-                MainBank.Accounts.Add(new DebitAccount());
+                bank.Accounts.Add(new DebitAccount() { Id = CustomRandom.RandomAccountNumber() });
             }
         }
 
-        public bool DeleteAccount(int chooseAccount)
+        public bool DeleteAccount(MainBank bank, int chooseAccount)
         {
-            if (chooseAccount < 0 && chooseAccount >= MainBank.Accounts.Count)
+            if (chooseAccount < 0 && chooseAccount >= bank.Accounts.Count)
             {
                 return false;
             }
-            else if (MainBank.Accounts[chooseAccount].Cards.Count != 0)
+            else if (bank.Accounts[chooseAccount].Cards.Count != 0)
             {
                 return false;
             }
             else
             {
-                MainBank.Accounts.RemoveAt(chooseAccount);
+                bank.Accounts.RemoveAt(chooseAccount);
 
                 return true;
             }
         }
 
-        public string GetAccountsInfo()
+        public string GetAccountsInfo(MainBank bank)
         {
-            if (MainBank.Accounts.Count == 0)
+            if (bank.Accounts.Count == 0)
             {
                 return string.Empty;
             }
@@ -48,7 +50,7 @@ namespace BankArchitecture.Bll.Bank.Implementations
                 string accountInfo = string.Empty;
                 int countCards = 0;
 
-                foreach (Account account in MainBank.Accounts)
+                foreach (Account account in bank.Accounts)
                 {
                     accountInfo += $"{countCards++}. {account.Id} {account.Balance}\n";
                 }
@@ -57,23 +59,38 @@ namespace BankArchitecture.Bll.Bank.Implementations
             }
         }
 
-        public bool TransferMoneyToAccount(int accountIndex, int sum)
+        public bool TransferMoneyToAccount(MainBank bank, int accountIndex, int sum)
         {
-            if (accountIndex > MainBank.Accounts.Count - 1 || accountIndex < 0)
+            if (accountIndex > bank.Accounts.Count - 1 || accountIndex < 0)
             {
                 return false;
             }
-            else if (sum > MainBank.Balance)
+            else if (sum > bank.Balance)
             {
                 return false;
             }
             else
             {
-                MainBank.Accounts[accountIndex].Balance += sum;
-                MainBank.Balance -= sum;
+                bank.Accounts[accountIndex].Balance += sum;
+                bank.Balance -= sum;
 
                 return true;
             }
+        }
+
+        public bool SeriallizeBank(MainBank bank)
+        {
+            BankSeriallizer.SerializeBank(bank);
+
+            return true;
+        }
+
+        public MainBank DeserializeBank()
+        {
+            MainBank bank = new MainBank();
+            bank = BankSeriallizer.DeserializeBank(bank).Result;
+
+            return bank;
         }
     }
 }

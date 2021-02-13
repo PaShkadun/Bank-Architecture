@@ -2,11 +2,11 @@
 {
     public enum CreditCardFunctions
     {
-        TransferToCard      = 1,
-        TransferToAccount   = 2,
-        PayCredit           = 3,
-        AddCredit           = 4,
-        ShowCreditList      = 5,
-        DeleteCard          = 6,
+        AddCredit   = 1,
+        PayCredit   = 2,
+        ShowCredits = 3,
+        SpendMoney  = 4,
+        ShowBalance = 5,
+        Exit        = 0,
     }
 }

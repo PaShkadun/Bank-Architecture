@@ -10,6 +10,8 @@ namespace BankArchitecture.Providers
 
         public string InputStringValue();
 
-        public TypeOfObject ChooseTypeOfObject();
+        public TypeOfAccount ChooseTypeOfObject();
+
+        public void WaitingPressAnyKey();
     }
 }

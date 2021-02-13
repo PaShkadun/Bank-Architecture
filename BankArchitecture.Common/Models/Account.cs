@@ -4,7 +4,7 @@ namespace BankArchitecture.Common
 {
     public abstract class Account
     {
-        public int Id { get; set; }
+        public string Id { get; init; }
 
         public double Balance { get; set; }
 
@@ -12,7 +12,6 @@ namespace BankArchitecture.Common
 
         public Account()
         {
-            Cards = new List<Card>();
         }
     }
 }

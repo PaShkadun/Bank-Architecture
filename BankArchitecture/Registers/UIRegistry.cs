@@ -16,9 +16,14 @@ namespace BankArchitecture.Registers
 
             services.AddSingleton<IMainProvider, MainProvider>();
             services.AddSingleton<IConsoleProvider, ConsoleProvider>();
+            services.AddSingleton<ICreditAccountProvider, CreditAccountProvider>();
+            services.AddSingleton<IDebitAccountProvider, DebitAccountProvider>();
+            services.AddSingleton<ICreditCardProvider, CreditCardProvider>();
+            services.AddSingleton<IDebitCardProvider, DebitCardProvider>();
             services.AddSingleton<IBankProvider, BankProvider>();
             services.AddSingleton<INotifier, ConsoleNotifier>();
             services.AddSingleton<IRunner, ConsoleRunner>();
+
             services.BuildIoC();
        }
     }

@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5</TargetFramework>
+    <LangVersion>9.0</LangVersion>
     <RootNamespace>Bank_Architecture_.Common</RootNamespace>
   </PropertyGroup>
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using BankArchitecture.Bll.Accounts.interfaces;
+using BankArchitecture.Bll.Random.Implementations;
 using BankArchitecture.Common;
 
 namespace BankArchitecture.Bll.Accounts.Implementations
@@ -8,20 +9,29 @@ namespace BankArchitecture.Bll.Accounts.Implementations
     {
         public void AddCard(Account account)
         {
-            account.Cards.Add(new CreditCard());
+            account.Cards.Add(new CreditCard() { Id = CustomRandom.RandomCardNumber() });
         }
 
         public bool AddCredit(Account account, int monthes, int sum)
         {
             if (CheckDebtOfCredits(account))
             {
-                ((CreditAccount)account).Credits.Add(new Credit(monthes, sum));
+                if (sum > 0 && monthes > 0)
+                {
+                    account.Balance += sum;
 
-                return true;
+                    ((CreditAccount)account).Credits.Add(new Credit(monthes, sum));
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
-                throw new NotImplementedException();
+                return false;
             }
         }
 
@@ -29,11 +39,11 @@ namespace BankArchitecture.Bll.Accounts.Implementations
         {
             if (chooseCard >= account.Cards.Count || chooseCard < 0)
             {
-                throw new NotImplementedException();
+                return false;
             }
             else
             {
-                if (((CreditCard)account.Cards[chooseCard]).Credits.Count > 0 && account.Cards[chooseCard].Balance >= 0)
+                if (((CreditCard)account.Cards[chooseCard]).Credits.Count == 0 && account.Cards[chooseCard].Balance >= 0)
                 {
                     account.Balance += account.Cards[chooseCard].Balance;
 
@@ -43,7 +53,7 @@ namespace BankArchitecture.Bll.Accounts.Implementations
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    return false;
                 }
             }
         }
@@ -52,15 +62,16 @@ namespace BankArchitecture.Bll.Accounts.Implementations
         {
             if (account.Cards.Count == 0)
             {
-                throw new NotImplementedException();
+                return string.Empty;
             }
             else
             {
                 string cardsInfo = string.Empty;
+                int count = 0;
 
                 foreach (CreditCard card in account.Cards)
                 {
-                    cardsInfo += $"{card.Id} {card.Balance} {card.Credits.Count}\n";
+                    cardsInfo += $"{count++}. {card.Id} {card.Balance} {card.Credits.Count}\n";
                 }
 
                 return cardsInfo;
@@ -71,7 +82,7 @@ namespace BankArchitecture.Bll.Accounts.Implementations
         {
             if (((CreditAccount)account).Credits.Count == 0)
             {
-                throw new NotImplementedException();
+                return string.Empty;
             }
             else
             {
@@ -86,28 +97,28 @@ namespace BankArchitecture.Bll.Accounts.Implementations
             }
         }
 
-        public bool PayCredit(Account account, int chooseCredit)
+        public bool PayCredit(CreditAccount account, int chooseCredit)
         {
-            if (chooseCredit > ((CreditAccount)account).Credits.Count || chooseCredit < 0)
+            if (chooseCredit > account.Credits.Count || chooseCredit < 0)
             {
-                throw new NotImplementedException();
+                return false;
             }
-            else if (((CreditAccount)account).Credits[chooseCredit].MonthesOfDebt == 0)
+            else if (account.Credits[chooseCredit].MonthesOfDebt == 0)
             {
-                throw new NotImplementedException();
+                return false;
             }
             else
             {
-                if ((((CreditAccount)account).Credits[chooseCredit].MonthesOfDebt * ((CreditAccount)account).Credits[chooseCredit].MonthlySum) <= account.Balance)
+                if ((account.Credits[chooseCredit].MonthesOfDebt * account.Credits[chooseCredit].MonthlySum) <= account.Balance)
                 {
-                    account.Balance -= ((CreditAccount)account).Credits[chooseCredit].MonthesOfDebt * ((CreditAccount)account).Credits[chooseCredit].MonthlySum;
-                    ((CreditAccount)account).Credits[chooseCredit].MonthesOfDebt = 0;
+                    account.Balance -= account.Credits[chooseCredit].MonthesOfDebt * account.Credits[chooseCredit].MonthlySum;
+                    account.Credits[chooseCredit].MonthesOfDebt = 0;
 
                     return true;
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    return false;
                 }
             }
         }
@@ -154,7 +165,7 @@ namespace BankArchitecture.Bll.Accounts.Implementations
         {
             if (((CreditAccount)account).Credits.Count == 0)
             {
-                throw new NotImplementedException();
+                return true;
             }
             else
             {
@@ -167,6 +178,20 @@ namespace BankArchitecture.Bll.Accounts.Implementations
                 }
 
                 return true;
+            }
+        }
+
+        public bool SpendMoney(Account account, int money)
+        {
+            if (account.Balance >= money)
+            {
+                account.Balance -= money;
+
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
     }

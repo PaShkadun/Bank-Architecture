@@ -17,7 +17,7 @@ namespace BankArchitecture.Providers
         {
             while (true)
             {
-                int choose = consoleProvider.InputValue(StringConstans.MainActions);
+                int choose = consoleProvider.InputValue(StringConstants.MainActions);
 
                 bankProvider.Start(choose);
             }

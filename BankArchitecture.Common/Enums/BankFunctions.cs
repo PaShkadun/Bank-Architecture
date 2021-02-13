@@ -8,5 +8,7 @@
         ShowBalance             = 4,
         AddMoneyToBalance       = 5,
         TransferMoneyToAccount  = 6,
+        ActionsWithCards        = 7,
+        SeriallizedBank         = 8,
     }
 }

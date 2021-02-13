@@ -5,7 +5,6 @@ using BankArchitecture.Bll.Bank.Implementations;
 using BankArchitecture.Bll.Bank.interfaces;
 using BankArchitecture.Bll.Cards.Implementations;
 using BankArchitecture.Bll.Cards.interfaces;
-using BankArchitecture.Common.Models;
 
 namespace BankArchitecture.Di
 {

@@ -10,15 +10,22 @@ namespace BankArchitecture.Bll.Cards.Implementations
         {
             if (CheckDebtOfCredits(card))
             {
-                card.Balance += sum;
+                if (sum > 0 && monthes > 0)
+                {
+                    card.Balance += sum;
 
-                ((CreditCard)card).Credits.Add(new Credit(monthes, sum));
+                    ((CreditCard)card).Credits.Add(new Credit(monthes, sum));
 
-                return true;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
-                throw new NotImplementedException();
+                return false;
             }
         }
 
@@ -42,15 +49,16 @@ namespace BankArchitecture.Bll.Cards.Implementations
         {
             if (((CreditCard)card).Credits.Count == 0)
             {
-                throw new NotImplementedException();
+                return string.Empty;
             }
             else
             {
                 string creditInfo = string.Empty;
+                int count = 0;
 
                 foreach (Credit credit in ((CreditCard)card).Credits)
                 {
-                    creditInfo += $"{credit.Monthes} {credit.MonthesOfDebt} {credit.MonthlySum}\n";
+                    creditInfo += $"{count++}. {credit.Monthes} {credit.MonthesOfDebt} {credit.MonthlySum}\n";
                 }
 
                 return creditInfo;
@@ -61,15 +69,15 @@ namespace BankArchitecture.Bll.Cards.Implementations
         {
             if (chooseCredit < 0 || chooseCredit >= ((CreditCard)card).Credits.Count)
             {
-                throw new NotImplementedException();
+                return false;
             }
             else if (((CreditCard)card).Credits[chooseCredit].MonthesOfDebt == 0)
             {
-                throw new NotImplementedException();
+                return false;
             }
             else if ((((CreditCard)card).Credits[chooseCredit].MonthesOfDebt * ((CreditCard)card).Credits[chooseCredit].MonthlySum) > card.Balance)
             {
-                throw new NotImplementedException();
+                return false;
             }
             else
             {
@@ -84,7 +92,7 @@ namespace BankArchitecture.Bll.Cards.Implementations
         {
             if (sum > card.Balance || sum < 0)
             {
-                throw new NotImplementedException();
+                return false;
             }
             else
             {

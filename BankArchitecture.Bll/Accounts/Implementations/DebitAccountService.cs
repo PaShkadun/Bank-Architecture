@@ -1,5 +1,6 @@
 ﻿using System;
 using BankArchitecture.Bll.Accounts.interfaces;
+using BankArchitecture.Bll.Random.Implementations;
 using BankArchitecture.Common;
 
 namespace BankArchitecture.Bll.Accounts.Implementations
@@ -8,14 +9,14 @@ namespace BankArchitecture.Bll.Accounts.Implementations
     {
         public void AddCard(Account account)
         {
-            account.Cards.Add(new DebitCard());
+            account.Cards.Add(new DebitCard() { Id = CustomRandom.RandomCardNumber()});
         }
 
         public bool DeleteCard(Account account, int cardNumber)
         {
             if (cardNumber < 0 || account.Cards.Count <= cardNumber)
             {
-                throw new NotImplementedException();
+                return false;
             }
             else
             {
@@ -30,18 +31,33 @@ namespace BankArchitecture.Bll.Accounts.Implementations
         {
             if (account.Cards.Count == 0)
             {
-                throw new NotImplementedException();
+                return string.Empty;
             }
             else
             {
                 string cardsInfo = string.Empty;
+                int count = 0;
 
                 foreach (Card card in account.Cards)
                 {
-                    cardsInfo += $"{card.Id} {card.Balance}\n";
+                    cardsInfo += $"{count++}. {card.Id} {card.Balance}\n";
                 }
 
                 return cardsInfo;
+            }
+        }
+
+        public bool SpendMoney(Account account, int money)
+        {
+            if (account.Balance >= money)
+            {
+                account.Balance -= money;
+
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 

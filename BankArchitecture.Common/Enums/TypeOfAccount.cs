@@ -1,6 +1,6 @@
 ﻿namespace BankArchitecture.Common.Enums
 {
-    public enum TypeOfObject
+    public enum TypeOfAccount
     {
         Debit = 1,
         Credit = 2,

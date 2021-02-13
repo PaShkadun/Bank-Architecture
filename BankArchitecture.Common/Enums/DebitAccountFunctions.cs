@@ -2,11 +2,14 @@
 {
     public enum DebitAccountFunctions
     {
-        TransferToCard      = 1,
-        TransferToAccount   = 2,
-        ShowCardList        = 3,
-        AddCard             = 4,
-        ChooseCard          = 5,
-        DeleteAccount       = 6,
+        TransferToAccount   = 1,
+        TransferToCard      = 2,
+        SpendMoney          = 3,
+        ShowBalance         = 4,
+        AddCard             = 5,
+        DeleteCard          = 6,
+        ShowCardList        = 7,
+        ChooseCard          = 8,
+        Exit                = 0,
     }
 }

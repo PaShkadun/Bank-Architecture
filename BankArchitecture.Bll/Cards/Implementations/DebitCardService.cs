@@ -10,7 +10,7 @@ namespace BankArchitecture.Bll.Cards.Implementations
         {
             if (card.Balance < sum || sum < 0)
             {
-                throw new NotImplementedException();
+                return false;
             }
             else
             {

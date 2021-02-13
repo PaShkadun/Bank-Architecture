@@ -13,5 +13,7 @@ namespace BankArchitecture.Bll.Accounts.interfaces
         public void AddCard(Account account);
 
         public bool DeleteCard(Account account, int cardNumber);
+
+        public bool SpendMoney(Account account, int money);
     }
 }

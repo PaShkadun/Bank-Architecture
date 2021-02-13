@@ -1,16 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BankArchitecture.Common.Models
 {
     public class MainBank
     {
-        public static string Name;
+        public string Name;
 
-        public static int Balance { get; set; }
+        public int Balance { get; set; }
 
-        public static List<Account> Accounts { get; set; }
+        [JsonIgnore]
+        public List<Account> Accounts { get; set; }
 
-        static MainBank()
+        public MainBank()
         {
             Accounts = new List<Account>();
         }

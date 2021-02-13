@@ -6,7 +6,7 @@ namespace BankArchitecture.Bll.Accounts.interfaces
     {
         public bool AddCredit(Account account, int monthes, int sum);
 
-        public bool PayCredit(Account account, int chooseCredit);
+        public bool PayCredit(CreditAccount account, int chooseCredit);
 
         public string GetCreditInfo(Account account);
 

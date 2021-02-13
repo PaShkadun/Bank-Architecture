@@ -1,6 +1,4 @@
-﻿using BankArchitecture.Bll.Bank.interfaces;
-using BankArchitecture.Common.Enums;
-using BankArchitecture.Common.Models;
+﻿using BankArchitecture.Common.Enums;
 using BankArchitecture.Resources;
 using System;
 
@@ -8,19 +6,19 @@ namespace BankArchitecture.Providers
 {
     public class ConsoleProvider : IConsoleProvider
     {
-        public TypeOfObject ChooseTypeOfObject()
+        public TypeOfAccount ChooseTypeOfObject()
         {
-            int choose = InputValue(StringConstans.TypeOfObject);
+            int choose = InputValue(StringConstants.TypeOfObject);
         
-            if (choose > (int)TypeOfObject.Credit || choose < (int)TypeOfObject.Debit)
+            if (choose > (int)TypeOfAccount.Credit || choose < (int)TypeOfAccount.Debit)
             {
-                ShowMessage(StringConstans.IncorrectInput);
+                ShowMessage(StringConstants.IncorrectInput);
 
-                return TypeOfObject.Incorrect;
+                return TypeOfAccount.Incorrect;
             }
             else
             {
-                return (TypeOfObject)choose;
+                return (TypeOfAccount)choose;
             }
         }
 
@@ -47,6 +45,13 @@ namespace BankArchitecture.Providers
         public void ShowMessage(string message)
         {
             Console.WriteLine(message);
+        }
+
+        public void WaitingPressAnyKey()
+        {
+            Console.WriteLine(StringConstants.PressAnyKey);
+            Console.ReadKey(true);
+            Console.Clear();
         }
     }
 }

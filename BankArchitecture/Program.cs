@@ -1,6 +1,4 @@
-﻿using BankArchitecture.Providers;
-using BankArchitecture.Registers;
-using BankArchitecture.Runners;
+﻿using BankArchitecture.Registers;
 using Microsoft.Extensions.Hosting;
 
 namespace BankArchitecture
