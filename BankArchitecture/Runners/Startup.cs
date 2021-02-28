@@ -1,8 +1,4 @@
-﻿using BankArchitecture.Common.Enums;
-using BankArchitecture.Common.Models;
-using BankArchitecture.Notifiers;
-using BankArchitecture.Providers;
-using BankArchitecture.Resources;
+﻿using BankArchitecture.Notifiers;
 using Microsoft.Extensions.Hosting;
 using System.Threading;
 using System.Threading.Tasks;

@@ -1,5 +1,4 @@
-﻿using System;
-using BankArchitecture.Bll.Accounts.interfaces;
+﻿using BankArchitecture.Bll.Accounts.interfaces;
 using BankArchitecture.Bll.Random.Implementations;
 using BankArchitecture.Common;
 
