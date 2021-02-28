@@ -26,11 +26,16 @@
         public const string InputCreditMonthes = "Input credit monthes";
         public const string PayCreditError = "You haven't money/credit isn't exists/credit paid";
         public const string DeleteCreditCardError = "You have credits or debt or card isn't exist";
+        public const string TransferMoneyError = "You have credit(s) or debt";
         public const string HaveNotMoney = "You haven't money or sum is negative";
         public const string HaveNotCredit = "You haven't credits or haven't debt of credits";
-        public const string CreditCardActions = "1. Add credit\n2. Pay credit\n3. Show credits\n4. Spend money\n5. Show balance\n0. Exit";
+        public const string CreditCardActions = "1. Add credit\n2. Pay credit\n3. Show credits\n4. Spend money\n5. Show balance\n6. Transfer money to account\n7. Transfer money to card\n0. Exit";
         public const string AddCreditError = "You have debt of credits or incorrect sum/count of monthes";
-        public const string DebitCardActions = "1. Spend money\n0. Exit";
+        public const string DebitCardActions = "1. Spend money\n2. Show balance\n3. Transfer money to account\n4. Transfer money to card\n0. Exit";
         public const string PressAnyKey = "Press any key to continue";
+        public const string Recipient = "recipient";
+        public const string Money = "money";
+        public const string Sender = "sender";
+        public const string SenderEqualsRecipient = "Error. Sender == Recipient";
     }
 }

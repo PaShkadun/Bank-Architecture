@@ -1,8 +1,10 @@
-﻿using BankArchitecture.Bll.Bank.interfaces;
+﻿using Bank_Architecture_.Common.Enums;
+using BankArchitecture.Bll.Bank.interfaces;
 using BankArchitecture.Common;
 using BankArchitecture.Common.Enums;
 using BankArchitecture.Common.Models;
 using BankArchitecture.Resources;
+using System.Collections.Generic;
 
 namespace BankArchitecture.Providers
 {
@@ -101,20 +103,12 @@ namespace BankArchitecture.Providers
 
                         break;
 
-                    case BankFunctions.ActionsWithCards:
-                        int chooseAccount = consoleProvider.InputValue(service.GetAccountsInfo(bank));
+                    case BankFunctions.ActionsWithAccounts:
+                        object hasTransfer = ChooseAccount();
 
-                        if (bank.Accounts.Count < chooseAccount || chooseAccount < 0)
+                        if (hasTransfer != null)
                         {
-                            consoleProvider.ShowMessage(StringConstants.IncorrectInput);
-                        }
-                        else if (bank.Accounts[chooseAccount] as CreditAccount != null)
-                        {
-                            creditAccountProvider.ChooseAction((CreditAccount)bank.Accounts[chooseAccount]);
-                        }
-                        else
-                        {
-                            debitAccountProvider.ChooseAction((DebitAccount)bank.Accounts[chooseAccount]);
+                            ChooseRecipientAccount(hasTransfer);
                         }
 
                         break;
@@ -133,6 +127,101 @@ namespace BankArchitecture.Providers
             }
 
             return;
+        }
+
+        private void ChooseRecipientAccount(object information)
+        {
+            consoleProvider.ShowMessage(service.GetAccountsInfo(bank));
+
+            int choose = consoleProvider.InputValue(StringConstants.InputValue);
+
+            if (choose >= 0 && choose <= bank.Accounts.Count - 1)
+            {
+                Dictionary<string, dynamic> transferInformation = (Dictionary<string, dynamic>)information;
+
+                if (transferInformation[StringConstants.Recipient] == Recipient.Account)
+                {
+                    if (transferInformation[StringConstants.Sender] != bank.Accounts[choose])
+                    {
+                        if (transferInformation[StringConstants.Sender] as Account != null)
+                        {
+                            ((Account)transferInformation[StringConstants.Sender]).Balance -= transferInformation[StringConstants.Money];
+                        }
+                        else
+                        {
+                            ((Card)transferInformation[StringConstants.Sender]).Balance -= transferInformation[StringConstants.Money];
+                        }
+
+                        bank.Accounts[choose].Balance += transferInformation[StringConstants.Money];
+
+                        consoleProvider.ShowMessage(StringConstants.Successfully);
+                    }
+                    else
+                    {
+                        consoleProvider.ShowMessage(StringConstants.SenderEqualsRecipient);
+                    }
+                }
+                else
+                {
+                    if (bank.Accounts[choose] as CreditAccount != null)
+                    {
+                        creditAccountProvider.ChooseRecipientCard((CreditAccount)bank.Accounts[choose], transferInformation);
+                    }
+                    else
+                    {
+                        debitAccountProvider.ChooseRecipientCard((DebitAccount)bank.Accounts[choose], transferInformation);
+                    }
+
+                    if (transferInformation[StringConstants.Recipient] != null)
+                    {
+                        if (transferInformation[StringConstants.Recipient] != transferInformation[StringConstants.Sender])
+                        {
+                            if (transferInformation[StringConstants.Sender] as Account != null)
+                            {
+                                ((Account)transferInformation[StringConstants.Sender]).Balance -= transferInformation[StringConstants.Money];
+                            }
+                            else
+                            {
+                                ((Card)transferInformation[StringConstants.Sender]).Balance -= transferInformation[StringConstants.Money];
+                            }
+
+                            ((Card)transferInformation[StringConstants.Recipient]).Balance += transferInformation[StringConstants.Money];
+                        }
+                        else
+                        {
+                            consoleProvider.ShowMessage(StringConstants.SenderEqualsRecipient);
+                        }
+                    }
+                    else
+                    {
+                        consoleProvider.ShowMessage(StringConstants.InputValue + "/" + StringConstants.HaveNotCards);
+                    }
+                }
+            }
+            else
+            {
+                consoleProvider.ShowMessage(StringConstants.IncorrectInput);
+            }
+        }
+
+        private object ChooseAccount()
+        {
+            int chooseAccount = consoleProvider.InputValue(service.GetAccountsInfo(bank));
+
+            if (bank.Accounts.Count < chooseAccount || chooseAccount < 0)
+            {
+                consoleProvider.ShowMessage(StringConstants.IncorrectInput);
+
+                return null;
+            }
+            else if (bank.Accounts[chooseAccount] as CreditAccount != null)
+            {
+                return creditAccountProvider.ChooseAction((CreditAccount)bank.Accounts[chooseAccount]);
+            }
+            else
+            {
+                return debitAccountProvider.ChooseAction((DebitAccount)bank.Accounts[chooseAccount]);
+            }
         }
 
         public void ChooseAccountForTransfer()

@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BankArchitecture.Providers
+﻿namespace BankArchitecture.Providers
 {
     public interface IBankProvider
     {
-        public string InputBankName();
+        string InputBankName();
 
-        public void ChooseAccountForDelete();
+        void ChooseAccountForDelete();
 
-        public void ChooseAccountForTransfer();
+        void ChooseAccountForTransfer();
 
-        public void Actions();
+        void Actions();
 
-        public void Start(int choose);
+        void Start(int choose);
     }
 }

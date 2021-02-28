@@ -1,7 +1,9 @@
-﻿using BankArchitecture.Bll.Accounts.interfaces;
+﻿using Bank_Architecture_.Common.Enums;
+using BankArchitecture.Bll.Accounts.interfaces;
 using BankArchitecture.Common;
 using BankArchitecture.Common.Enums;
 using BankArchitecture.Resources;
+using System.Collections.Generic;
 
 namespace BankArchitecture.Providers
 {
@@ -9,16 +11,18 @@ namespace BankArchitecture.Providers
     {
         private readonly IConsoleProvider consoleProvider;
         private readonly IDebitCardProvider debitCardProvider;
-        private readonly IDebitAccountService service;
+        private readonly IDebitAccountService debitAccountService;
+        private readonly IAccountService accountService;
 
-        public DebitAccountProvider(IDebitAccountService service, IConsoleProvider consoleProvider, IDebitCardProvider debitCardProvider)
+        public DebitAccountProvider(IDebitAccountService debitAccountService, IAccountService accountService, IConsoleProvider consoleProvider, IDebitCardProvider debitCardProvider)
         {
             this.consoleProvider = consoleProvider;
             this.debitCardProvider = debitCardProvider;
-            this.service = service;
+            this.debitAccountService = debitAccountService;
+            this.accountService = accountService;
         }
 
-        public void ChooseAction(DebitAccount account)
+        public object ChooseAction(DebitAccount account)
         {
             int choose = -1;
 
@@ -29,18 +33,40 @@ namespace BankArchitecture.Providers
                 switch ((DebitAccountFunctions)choose)
                 {
                     case DebitAccountFunctions.TransferToAccount:
-                        //Code
+                        int transferSumToAccount = consoleProvider.InputValue(StringConstants.InputValue);
+
+                        if (accountService.HasMoney(account, transferSumToAccount))
+                        {
+                            return new Dictionary<string, dynamic> { { StringConstants.Sender, account }, { StringConstants.Money, transferSumToAccount }, { StringConstants.Recipient, Recipient.Account } };
+                        }
+                        else
+                        {
+                            consoleProvider.ShowMessage(StringConstants.HaveNotMoney);
+                        }
+
                         break;
 
                     case DebitAccountFunctions.TransferToCard:
-                        //Code
+                        int transferSumToCard = consoleProvider.InputValue(StringConstants.InputValue);
+
+                        if (accountService.HasMoney(account, transferSumToCard))
+                        {
+                            return new Dictionary<string, dynamic> { { StringConstants.Sender, account }, { StringConstants.Money, transferSumToCard }, { StringConstants.Recipient, Recipient.Account } };
+                        }
+                        else
+                        {
+                            consoleProvider.ShowMessage(StringConstants.HaveNotMoney);
+                        }
+
                         break;
 
                     case DebitAccountFunctions.SpendMoney:
                         int howMoney = consoleProvider.InputValue(StringConstants.InputValue);
 
-                        if (service.SpendMoney(account, howMoney))
+                        if (accountService.HasMoney(account, howMoney))
                         {
+                            account.Balance -= howMoney;
+
                             consoleProvider.ShowMessage(StringConstants.Successfully);
                         }
                         else
@@ -56,13 +82,13 @@ namespace BankArchitecture.Providers
                         break;
 
                     case DebitAccountFunctions.AddCard:
-                        service.AddCard(account);
+                        debitAccountService.AddCard(account);
                         consoleProvider.ShowMessage(StringConstants.Successfully);
 
                         break;
 
                     case DebitAccountFunctions.DeleteCard:
-                        int chooseCard = consoleProvider.InputValue(service.GetCardsInfo(account));
+                        int chooseCard = consoleProvider.InputValue(accountService.GetCardsInfo(account));
 
                         if (chooseCard < 0 || chooseCard >= account.Cards.Count)
                         {
@@ -79,7 +105,7 @@ namespace BankArchitecture.Providers
                         break;
 
                     case DebitAccountFunctions.ShowCardList:
-                        string info = service.GetCardsInfo(account);
+                        string info = accountService.GetCardsInfo(account);
 
                         if (info == string.Empty)
                         {
@@ -93,30 +119,17 @@ namespace BankArchitecture.Providers
                         break;
 
                     case DebitAccountFunctions.ChooseCard:
-                        string cardInfo = service.GetCardsInfo(account);
+                        object hasTransfer = ChooseCard(account);
 
-                        if (cardInfo != string.Empty)
+                        if (hasTransfer != null)
                         {
-                            int getChooseCard = consoleProvider.InputValue(service.GetCardsInfo(account));
-
-                            if (getChooseCard < 0 || getChooseCard >= account.Cards.Count)
-                            {
-                                consoleProvider.ShowMessage(StringConstants.IncorrectInput);
-                            }
-                            else
-                            {
-                                debitCardProvider.ChooseAction((DebitCard)account.Cards[getChooseCard]);
-                            }
-                        }
-                        else
-                        {
-                            consoleProvider.ShowMessage(StringConstants.HaveNotCards);
+                            return hasTransfer;
                         }
 
                         break;
 
                     case DebitAccountFunctions.Exit:
-                        return;
+                        return null;
 
                     default:
                         consoleProvider.ShowMessage(StringConstants.IncorrectInput);
@@ -124,6 +137,51 @@ namespace BankArchitecture.Providers
                 }
 
                 consoleProvider.WaitingPressAnyKey();
+            }
+
+            return null;
+        }
+
+        public void ChooseRecipientCard(DebitAccount account, Dictionary<string, dynamic> information)
+        {
+            consoleProvider.ShowMessage(accountService.GetCardsInfo(account));
+
+            int chooseRecipientCard = consoleProvider.InputValue(StringConstants.InputValue);
+
+            if (chooseRecipientCard >= 0 && chooseRecipientCard < account.Cards.Count)
+            {
+                information[StringConstants.Recipient] = account.Cards[chooseRecipientCard];
+            }
+            else
+            {
+                information[StringConstants.Recipient] = null;
+            }
+        }
+
+        private object ChooseCard(Account account)
+        {
+            string cardInfo = accountService.GetCardsInfo(account);
+
+            if (cardInfo != string.Empty)
+            {
+                int getChooseCard = consoleProvider.InputValue(accountService.GetCardsInfo(account));
+
+                if (getChooseCard < 0 || getChooseCard >= account.Cards.Count)
+                {
+                    consoleProvider.ShowMessage(StringConstants.IncorrectInput);
+                    
+                    return null;
+                }
+                else
+                {
+                    return debitCardProvider.ChooseAction((DebitCard)account.Cards[getChooseCard]);
+                }
+            }
+            else
+            {
+                consoleProvider.ShowMessage(StringConstants.HaveNotCards);
+
+                return null;
             }
         }
     }

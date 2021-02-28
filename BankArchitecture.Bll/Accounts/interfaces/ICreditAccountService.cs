@@ -2,14 +2,18 @@
 
 namespace BankArchitecture.Bll.Accounts.interfaces
 {
-    public interface ICreditAccountService : IAccountService
+    public interface ICreditAccountService
     {
-        public bool AddCredit(Account account, int monthes, int sum);
+        bool DeleteCard(Account account, int cardNumber);
 
-        public bool PayCredit(CreditAccount account, int chooseCredit);
+        void AddCard(Account account);
 
-        public string GetCreditInfo(Account account);
+        bool AddCredit(Account account, int monthes, int sum);
 
-        public bool CheckDebtOfCredits(Account account);
+        bool PayCredit(CreditAccount account, int chooseCredit);
+
+        string GetCreditInfo(Account account);
+
+        bool CheckDebtOfCredits(Account account);
     }
 }

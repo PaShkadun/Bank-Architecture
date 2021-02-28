@@ -13,9 +13,10 @@ namespace BankArchitecture.Di
         public static void BuildIoC(this IServiceCollection services)
         {
             services.AddSingleton<ICreditCardService, CreditCardService>();
-            services.AddSingleton<IDebitCardService, DebitCardService>();
             services.AddSingleton<ICreditAccountService, CreditAccountService>();
             services.AddSingleton<IDebitAccountService, DebitAccountService>();
+            services.AddSingleton<IAccountService, AccountService>();
+            services.AddSingleton<ICardService, CardService>();
             services.AddSingleton<IBankService, BankService>();
         }
     }

@@ -2,14 +2,14 @@
 
 namespace BankArchitecture.Bll.Cards.interfaces
 {
-    public interface ICreditCardService : ICardService
+    public interface ICreditCardService
     {
-        public string GetCreditsInfo(Card card);
+        string GetCreditsInfo(Card card);
 
-        public bool AddCredit(Card card, int monthes, int sum);
+        bool AddCredit(Card card, int monthes, int sum);
 
-        public bool PayCredit(Card card, int chooseCredit);
+        bool PayCredit(Card card, int chooseCredit);
 
-        public bool CheckDebtOfCredits(Card card);
+        bool CheckDebtOfCredits(Card card);
     }
 }

@@ -2,8 +2,8 @@
 {
     public enum TypeOfAccount
     {
-        Debit = 1,
-        Credit = 2,
-        Incorrect = 0,
+        Debit       = 1,
+        Credit      = 2,
+        Incorrect   = 0,
     }
 }

@@ -4,14 +4,14 @@ namespace BankArchitecture.Providers
 {
     public interface IConsoleProvider
     {
-        public void ShowMessage(string message);
+        void ShowMessage(string message);
 
-        public int InputValue(string message);
+        int InputValue(string message);
 
-        public string InputStringValue();
+        string InputStringValue();
 
-        public TypeOfAccount ChooseTypeOfObject();
+        TypeOfAccount ChooseTypeOfObject();
 
-        public void WaitingPressAnyKey();
+        void WaitingPressAnyKey();
     }
 }

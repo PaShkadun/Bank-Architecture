@@ -4,6 +4,6 @@ namespace BankArchitecture.Providers
 {
     public interface IDebitCardProvider
     {
-        public void ChooseAction(DebitCard account);
+        object ChooseAction(DebitCard account);
     }
 }

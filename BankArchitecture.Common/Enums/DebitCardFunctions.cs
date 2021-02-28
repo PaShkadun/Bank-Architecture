@@ -2,8 +2,10 @@
 {
     public enum DebitCardFunctions
     {
-        SpendMoney  = 1,
-        ShowBalance = 2,
-        Exit        = 0,
+        SpendMoney              = 1,
+        ShowBalance             = 2,
+        TransferMoneyToAccount  = 3,
+        TransferMoneyTocard     = 4,
+        Exit                    = 0,
     }
 }

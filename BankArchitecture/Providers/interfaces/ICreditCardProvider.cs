@@ -4,6 +4,6 @@ namespace BankArchitecture.Providers
 {
     public interface ICreditCardProvider
     {
-        public void ChooseAction(CreditCard card);
+        object ChooseAction(CreditCard card);
     }
 }

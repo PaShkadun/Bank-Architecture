@@ -7,7 +7,7 @@ namespace BankArchitecture.Common.Models
     {
         public string Name;
 
-        public int Balance { get; set; }
+        public double Balance { get; set; }
 
         [JsonIgnore]
         public List<Account> Accounts { get; set; }

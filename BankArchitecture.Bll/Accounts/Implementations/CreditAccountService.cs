@@ -1,5 +1,4 @@
-﻿using System;
-using BankArchitecture.Bll.Accounts.interfaces;
+﻿using BankArchitecture.Bll.Accounts.interfaces;
 using BankArchitecture.Bll.Random.Implementations;
 using BankArchitecture.Common;
 
@@ -29,10 +28,8 @@ namespace BankArchitecture.Bll.Accounts.Implementations
                     return false;
                 }
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         public bool DeleteCard(Account account, int chooseCard)
@@ -55,26 +52,6 @@ namespace BankArchitecture.Bll.Accounts.Implementations
                 {
                     return false;
                 }
-            }
-        }
-
-        public string GetCardsInfo(Account account)
-        {
-            if (account.Cards.Count == 0)
-            {
-                return string.Empty;
-            }
-            else
-            {
-                string cardsInfo = string.Empty;
-                int count = 0;
-
-                foreach (CreditCard card in account.Cards)
-                {
-                    cardsInfo += $"{count++}. {card.Id} {card.Balance} {card.Credits.Count}\n";
-                }
-
-                return cardsInfo;
             }
         }
 
@@ -123,44 +100,6 @@ namespace BankArchitecture.Bll.Accounts.Implementations
             }
         }
 
-        public bool TransferMoneyToAccount(Account pullAccount, Account pushAccount, int sum)
-        {
-            if (pullAccount == pushAccount)
-            {
-                throw new NotImplementedException();
-            }
-            else if (pullAccount.Balance < sum)
-            {
-                throw new NotImplementedException();
-            }
-            else if (pushAccount as DebitAccount != null)
-            {
-                throw new NotImplementedException();
-            }
-            else
-            {
-                pullAccount.Balance -= sum;
-                pushAccount.Balance += sum;
-
-                return true;
-            }
-        }
-
-        public bool TransferMoneyToCard(Account account, Card card, int sum)
-        {
-            if (account.Balance < sum)
-            {
-                throw new NotImplementedException();
-            }
-            else
-            {
-                account.Balance -= sum;
-                card.Balance += sum;
-
-                return true;
-            }
-        }
-
         public bool CheckDebtOfCredits(Account account)
         {
             if (((CreditAccount)account).Credits.Count == 0)
@@ -169,7 +108,7 @@ namespace BankArchitecture.Bll.Accounts.Implementations
             }
             else
             {
-                foreach (Credit credit in ((CreditAccount)account).Credits)
+                foreach (var credit in ((CreditAccount)account).Credits)
                 {
                     if (credit.MonthesOfDebt != 0)
                     {
@@ -178,20 +117,6 @@ namespace BankArchitecture.Bll.Accounts.Implementations
                 }
 
                 return true;
-            }
-        }
-
-        public bool SpendMoney(Account account, int money)
-        {
-            if (account.Balance >= money)
-            {
-                account.Balance -= money;
-
-                return true;
-            }
-            else
-            {
-                return false;
             }
         }
     }

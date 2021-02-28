@@ -1,24 +1,28 @@
-﻿using BankArchitecture.Bll.Accounts.interfaces;
+﻿using Bank_Architecture_.Common.Enums;
+using BankArchitecture.Bll.Accounts.interfaces;
 using BankArchitecture.Common;
 using BankArchitecture.Common.Enums;
 using BankArchitecture.Resources;
+using System.Collections.Generic;
 
 namespace BankArchitecture.Providers
 {
     public class CreditAccountProvider : ICreditAccountProvider
     {
-        private readonly ICreditAccountService servise;
+        private readonly ICreditAccountService creditAccountService;
+        private readonly IAccountService accountService;
         private readonly IConsoleProvider consoleProvider;
         private readonly ICreditCardProvider creditCardProvider;
 
-        public CreditAccountProvider(ICreditAccountService servise, IConsoleProvider consoleProvider, ICreditCardProvider creditCardProvider)
+        public CreditAccountProvider(ICreditAccountService creditAccountService, IAccountService accountService, IConsoleProvider consoleProvider, ICreditCardProvider creditCardProvider)
         {
             this.consoleProvider = consoleProvider;
             this.creditCardProvider = creditCardProvider;
-            this.servise = servise;
+            this.creditAccountService = creditAccountService;
+            this.accountService = accountService;
         }
 
-        public void ChooseAction(CreditAccount account)
+        public object ChooseAction(CreditAccount account)
         {
             int choose = -1;
 
@@ -29,19 +33,39 @@ namespace BankArchitecture.Providers
                 switch ((CreditAccountFunctions)choose)
                 {
                     case CreditAccountFunctions.TransferToAccount:
-                        //code
+                        int transferSumToAccount = consoleProvider.InputValue(StringConstants.InputValue);
+
+                        if (accountService.HasMoney(account, transferSumToAccount) && creditAccountService.CheckDebtOfCredits(account))
+                        {
+                            return new Dictionary<string, dynamic> { { StringConstants.Sender, account }, { StringConstants.Money, transferSumToAccount }, { StringConstants.Recipient, Recipient.Account } };
+                        }
+                        else
+                        {
+                            consoleProvider.ShowMessage(StringConstants.HaveNotMoney + "/" + StringConstants.TransferMoneyError);
+                        }
+
                         break;
 
                     case CreditAccountFunctions.TransferToCard:
-                        //code
+                        int transferSumToCard = consoleProvider.InputValue(StringConstants.InputValue);
+
+                        if (accountService.HasMoney(account, transferSumToCard) && creditAccountService.CheckDebtOfCredits(account))
+                        {
+                            return new Dictionary<string, dynamic> { { StringConstants.Sender, account }, { StringConstants.Money, transferSumToCard }, { StringConstants.Recipient, Recipient.Account } };
+                        }
+                        else
+                        {
+                            consoleProvider.ShowMessage(StringConstants.HaveNotMoney + "/" + StringConstants.TransferMoneyError);
+                        }
+
                         break;
 
                     case CreditAccountFunctions.PayCredit:
-                        string info = servise.GetCreditInfo(account);
+                        string info = creditAccountService.GetCreditInfo(account);
 
                         if (info != string.Empty)
                         {
-                            if (servise.PayCredit(account, consoleProvider.InputValue(info)))
+                            if (creditAccountService.PayCredit(account, consoleProvider.InputValue(info)))
                             {
                                 consoleProvider.ShowMessage(StringConstants.Successfully);
                             }
@@ -61,7 +85,7 @@ namespace BankArchitecture.Providers
                         int sum = consoleProvider.InputValue(StringConstants.InputCreditSum);
                         int monthes = consoleProvider.InputValue(StringConstants.InputCreditMonthes);
 
-                        if (servise.AddCredit(account, monthes, sum))
+                        if (creditAccountService.AddCredit(account, monthes, sum))
                         {
                             consoleProvider.ShowMessage(StringConstants.Successfully);
                         }
@@ -73,7 +97,7 @@ namespace BankArchitecture.Providers
                         break;
 
                     case CreditAccountFunctions.ShowCreditList:
-                        string creditInfo = servise.GetCreditInfo(account);
+                        string creditInfo = creditAccountService.GetCreditInfo(account);
                         
                         if (creditInfo == string.Empty)
                         {
@@ -87,8 +111,10 @@ namespace BankArchitecture.Providers
                     case CreditAccountFunctions.SpendMoney:
                         int howMoney = consoleProvider.InputValue(StringConstants.InputValue);
 
-                        if (servise.SpendMoney(account, howMoney))
+                        if (accountService.HasMoney(account, howMoney))
                         {
+                            account.Balance -= howMoney;
+
                             consoleProvider.ShowMessage(StringConstants.Successfully);
                         }
                         else
@@ -104,16 +130,16 @@ namespace BankArchitecture.Providers
                         break;
 
                     case CreditAccountFunctions.AddCard:
-                        servise.AddCard(account);
+                        creditAccountService.AddCard(account);
 
                         consoleProvider.ShowMessage(StringConstants.Successfully);
 
                         break;
 
                     case CreditAccountFunctions.DeleteCard:
-                        int chooseCard = consoleProvider.InputValue(servise.GetCardsInfo(account));
+                        int chooseCard = consoleProvider.InputValue(accountService.GetCardsInfo(account));
 
-                        if (servise.DeleteCard(account, chooseCard))
+                        if (creditAccountService.DeleteCard(account, chooseCard))
                         {
                             consoleProvider.ShowMessage(StringConstants.Successfully);
                         }
@@ -125,7 +151,7 @@ namespace BankArchitecture.Providers
                         break;
 
                     case CreditAccountFunctions.ShowCardList:
-                        string cardInfo = servise.GetCardsInfo(account);
+                        string cardInfo = accountService.GetCardsInfo(account);
 
                         if (cardInfo == string.Empty)
                         {
@@ -137,12 +163,17 @@ namespace BankArchitecture.Providers
                         break;
 
                     case CreditAccountFunctions.ChooseCard:
-                        ChooseCard(account);
+                        object hasTransfer = ChooseCard(account);
+
+                        if (hasTransfer != null)
+                        {
+                            return hasTransfer;
+                        }
 
                         break;
 
                     case CreditAccountFunctions.Exit:
-                        return;
+                        return null;
 
                     default:
                         consoleProvider.ShowMessage(StringConstants.IncorrectInput);
@@ -151,17 +182,35 @@ namespace BankArchitecture.Providers
 
                 consoleProvider.WaitingPressAnyKey();
             }
+
+            return null;
         }
 
-        private void ChooseCard(CreditAccount account)
+        public void ChooseRecipientCard(CreditAccount account, Dictionary<string, dynamic> information)
         {
-            string cardInfo = servise.GetCardsInfo(account);
+            consoleProvider.ShowMessage(accountService.GetCardsInfo(account));
+
+            int chooseRecipientCard = consoleProvider.InputValue(StringConstants.InputValue);
+
+            if (chooseRecipientCard >= 0 && chooseRecipientCard < account.Cards.Count)
+            {
+                information[StringConstants.Recipient] = account.Cards[chooseRecipientCard];
+            }
+            else
+            {
+                information[StringConstants.Recipient] = null;
+            }
+        }
+
+        private object ChooseCard(CreditAccount account)
+        {
+            string cardInfo = accountService.GetCardsInfo(account);
 
             if (cardInfo == string.Empty)
             {
                 consoleProvider.ShowMessage(StringConstants.HaveNotCards);
 
-                return;
+                return null;
             }
             else
             {
@@ -170,10 +219,12 @@ namespace BankArchitecture.Providers
                 if (chooseCard < 0 || chooseCard >= account.Cards.Count)
                 {
                     consoleProvider.ShowMessage(StringConstants.IncorrectInput);
+
+                    return null;
                 }
                 else
                 {
-                    creditCardProvider.ChooseAction((CreditCard)account.Cards[chooseCard]);
+                    return creditCardProvider.ChooseAction((CreditCard)account.Cards[chooseCard]);
                 }
             }
         }
