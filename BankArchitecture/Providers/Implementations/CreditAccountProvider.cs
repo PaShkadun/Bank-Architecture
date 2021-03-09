@@ -1,11 +1,11 @@
-﻿using Bank_Architecture_.Common.Enums;
+﻿using BankArchitecture.Common.Enums;
 using BankArchitecture.Bll.Accounts.interfaces;
-using BankArchitecture.Common;
-using BankArchitecture.Common.Enums;
+using BankArchitecture.Common.Models;
 using BankArchitecture.Resources;
+using BankArchitecture.Providers.Interfaces;
 using System.Collections.Generic;
 
-namespace BankArchitecture.Providers
+namespace BankArchitecture.Providers.Implementations
 {
     public class CreditAccountProvider : ICreditAccountProvider
     {
@@ -33,32 +33,14 @@ namespace BankArchitecture.Providers
                 switch ((CreditAccountFunctions)choose)
                 {
                     case CreditAccountFunctions.TransferToAccount:
-                        int transferSumToAccount = consoleProvider.InputValue(StringConstants.InputValue);
+                        double transferSumToAccount = consoleProvider.InputValue(StringConstants.InputValue);
 
-                        if (accountService.HasMoney(account, transferSumToAccount) && creditAccountService.CheckDebtOfCredits(account))
-                        {
-                            return new Dictionary<string, dynamic> { { StringConstants.Sender, account }, { StringConstants.Money, transferSumToAccount }, { StringConstants.Recipient, Recipient.Account } };
-                        }
-                        else
-                        {
-                            consoleProvider.ShowMessage(StringConstants.HaveNotMoney + "/" + StringConstants.TransferMoneyError);
-                        }
-
-                        break;
+                        return CanTransferMoneyTo(account, transferSumToAccount);
 
                     case CreditAccountFunctions.TransferToCard:
-                        int transferSumToCard = consoleProvider.InputValue(StringConstants.InputValue);
+                        double transferSumToCard = consoleProvider.InputValue(StringConstants.InputValue);
 
-                        if (accountService.HasMoney(account, transferSumToCard) && creditAccountService.CheckDebtOfCredits(account))
-                        {
-                            return new Dictionary<string, dynamic> { { StringConstants.Sender, account }, { StringConstants.Money, transferSumToCard }, { StringConstants.Recipient, Recipient.Account } };
-                        }
-                        else
-                        {
-                            consoleProvider.ShowMessage(StringConstants.HaveNotMoney + "/" + StringConstants.TransferMoneyError);
-                        }
-
-                        break;
+                        return CanTransferMoneyTo(account, transferSumToCard);
 
                     case CreditAccountFunctions.PayCredit:
                         string info = creditAccountService.GetCreditInfo(account);
@@ -111,7 +93,7 @@ namespace BankArchitecture.Providers
                     case CreditAccountFunctions.SpendMoney:
                         int howMoney = consoleProvider.InputValue(StringConstants.InputValue);
 
-                        if (accountService.HasMoney(account, howMoney))
+                        if (howMoney <= account.Balance)
                         {
                             account.Balance -= howMoney;
 
@@ -130,7 +112,7 @@ namespace BankArchitecture.Providers
                         break;
 
                     case CreditAccountFunctions.AddCard:
-                        creditAccountService.AddCard(account);
+                        accountService.AddCard(account);
 
                         consoleProvider.ShowMessage(StringConstants.Successfully);
 
@@ -139,8 +121,10 @@ namespace BankArchitecture.Providers
                     case CreditAccountFunctions.DeleteCard:
                         int chooseCard = consoleProvider.InputValue(accountService.GetCardsInfo(account));
 
-                        if (creditAccountService.DeleteCard(account, chooseCard))
+                        if (creditAccountService.CheckDebtOfCredits(account))
                         {
+                            accountService.DeleteCard(account, chooseCard);
+
                             consoleProvider.ShowMessage(StringConstants.Successfully);
                         }
                         else
@@ -186,22 +170,6 @@ namespace BankArchitecture.Providers
             return null;
         }
 
-        public void ChooseRecipientCard(CreditAccount account, Dictionary<string, dynamic> information)
-        {
-            consoleProvider.ShowMessage(accountService.GetCardsInfo(account));
-
-            int chooseRecipientCard = consoleProvider.InputValue(StringConstants.InputValue);
-
-            if (chooseRecipientCard >= 0 && chooseRecipientCard < account.Cards.Count)
-            {
-                information[StringConstants.Recipient] = account.Cards[chooseRecipientCard];
-            }
-            else
-            {
-                information[StringConstants.Recipient] = null;
-            }
-        }
-
         private object ChooseCard(CreditAccount account)
         {
             string cardInfo = accountService.GetCardsInfo(account);
@@ -226,6 +194,18 @@ namespace BankArchitecture.Providers
                 {
                     return creditCardProvider.ChooseAction((CreditCard)account.Cards[chooseCard]);
                 }
+            }
+        }
+
+        private object CanTransferMoneyTo(Account account, double howMoney)
+        {
+            if (howMoney <= account.Balance && creditAccountService.CheckDebtOfCredits(account))
+            {
+                return new Dictionary<string, object> { { StringConstants.Sender, account }, { StringConstants.Money, howMoney }, { StringConstants.Recipient, Recipient.Account } };
+            }
+            else
+            {
+                return StringConstants.HaveNotMoney + "/" + StringConstants.TransferMoneyError;
             }
         }
     }

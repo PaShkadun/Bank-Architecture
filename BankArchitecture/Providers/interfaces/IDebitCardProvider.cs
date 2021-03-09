@@ -1,6 +1,6 @@
-﻿using BankArchitecture.Common;
+﻿using BankArchitecture.Common.Models;
 
-namespace BankArchitecture.Providers
+namespace BankArchitecture.Providers.Interfaces
 {
     public interface IDebitCardProvider
     {

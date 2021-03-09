@@ -1,6 +1,6 @@
 ﻿using BankArchitecture.Common.Enums;
 
-namespace BankArchitecture.Providers
+namespace BankArchitecture.Providers.Interfaces
 {
     public interface IConsoleProvider
     {

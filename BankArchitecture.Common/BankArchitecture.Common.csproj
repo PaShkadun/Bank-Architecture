@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5</TargetFramework>
-    <LangVersion>9.0</LangVersion>
-    <RootNamespace>Bank_Architecture_.Common</RootNamespace>
+    <RootNamespace>BankArchitecture.Common</RootNamespace>
   </PropertyGroup>
 
 </Project>

@@ -2,8 +2,8 @@
 
 namespace BankArchitecture.Providers.Interfaces
 {
-    public interface ICreditCardProvider
+    public interface IAccountProvider
     {
-        object ChooseAction(CreditCard card);
+        object ChooseRecipientCard(Account account);
     }
 }

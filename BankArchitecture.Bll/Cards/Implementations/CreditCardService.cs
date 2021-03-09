@@ -1,5 +1,5 @@
 ﻿using BankArchitecture.Bll.Cards.interfaces;
-using BankArchitecture.Common;
+using BankArchitecture.Common.Models;
 
 namespace BankArchitecture.Bll.Cards.Implementations
 {

@@ -1,20 +1,18 @@
-﻿using Bank_Architecture_.Common.Enums;
-using BankArchitecture.Bll.Cards.interfaces;
-using BankArchitecture.Common;
+﻿using BankArchitecture.Bll.Cards.interfaces;
+using BankArchitecture.Common.Models;
 using BankArchitecture.Common.Enums;
 using BankArchitecture.Resources;
 using System.Collections.Generic;
+using BankArchitecture.Providers.Interfaces;
 
-namespace BankArchitecture.Providers
+namespace BankArchitecture.Providers.Implementations
 {
     public class DebitCardProvider : IDebitCardProvider
     {
-        private readonly ICardService service;
         private readonly IConsoleProvider consoleProvider;
 
-        public DebitCardProvider(ICardService service, IConsoleProvider consoleProvider)
+        public DebitCardProvider(IConsoleProvider consoleProvider)
         {
-            this.service = service;
             this.consoleProvider = consoleProvider;
         }
 
@@ -31,7 +29,7 @@ namespace BankArchitecture.Providers
                     case DebitCardFunctions.SpendMoney:
                         int sum = consoleProvider.InputValue(StringConstants.InputValue);
 
-                        if (service.HasMoney(card, sum))
+                        if (sum <= card.Balance)
                         {
                             card.Balance -= sum;
 
@@ -50,32 +48,14 @@ namespace BankArchitecture.Providers
                         break;
 
                     case DebitCardFunctions.TransferMoneyToAccount:
-                        int transferSumToAccount = consoleProvider.InputValue(StringConstants.InputValue);
+                        double transferSumToAccount = consoleProvider.InputValue(StringConstants.InputValue);
 
-                        if (service.HasMoney(card, transferSumToAccount))
-                        {
-                            return new Dictionary<string, dynamic> { { StringConstants.Sender, card }, { StringConstants.Money, transferSumToAccount }, { StringConstants.Recipient, Recipient.Account } };
-                        }
-                        else
-                        {
-                            consoleProvider.ShowMessage(StringConstants.TransferMoneyError);
-                        }
-
-                        break;
+                        return CanTransferMoneyTo(card, transferSumToAccount);
 
                     case DebitCardFunctions.TransferMoneyTocard:
-                        int transferSumToCard = consoleProvider.InputValue(StringConstants.InputValue);
+                        double transferSumToCard = consoleProvider.InputValue(StringConstants.InputValue);
 
-                        if (service.HasMoney(card, transferSumToCard))
-                        {
-                            return new Dictionary<string, dynamic> { { StringConstants.Sender, card }, { StringConstants.Money, transferSumToCard }, { StringConstants.Recipient, Recipient.Account } };
-                        }
-                        else
-                        {
-                            consoleProvider.ShowMessage(StringConstants.TransferMoneyError);
-                        }
-
-                        break;
+                        return CanTransferMoneyTo(card, transferSumToCard);
 
                     case DebitCardFunctions.Exit:
                         return null;
@@ -88,6 +68,18 @@ namespace BankArchitecture.Providers
             }
 
             return null;
+        }
+
+        private object CanTransferMoneyTo(Card card, double howMoney)
+        {
+            if (howMoney <= card.Balance)
+            {
+                return new Dictionary<string, object> { { StringConstants.Sender, card }, { StringConstants.Money, howMoney }, { StringConstants.Recipient, Recipient.Account } };
+            }
+            else
+            {
+                return StringConstants.TransferMoneyError;
+            }
         }
     }
 }

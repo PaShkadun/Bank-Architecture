@@ -1,4 +1,4 @@
-﻿using BankArchitecture.Common;
+﻿using BankArchitecture.Common.Models;
 
 namespace BankArchitecture.Bll.Cards.interfaces
 {

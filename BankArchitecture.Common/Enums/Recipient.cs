@@ -1,4 +1,4 @@
-﻿namespace Bank_Architecture_.Common.Enums
+﻿namespace BankArchitecture.Common.Enums
 {
     public enum Recipient
     {

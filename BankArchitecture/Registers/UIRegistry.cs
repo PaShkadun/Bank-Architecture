@@ -1,9 +1,9 @@
-﻿using BankArchitecture.Providers;
-using BankArchitecture.Runners;
+﻿using BankArchitecture.Runners;
 using Microsoft.Extensions.DependencyInjection;
 using BankArchitecture.Di;
 using Microsoft.Extensions.Hosting;
-using BankArchitecture.Notifiers;
+using BankArchitecture.Providers.Interfaces;
+using BankArchitecture.Providers.Implementations;
 
 namespace BankArchitecture.Registers
 {
@@ -16,13 +16,12 @@ namespace BankArchitecture.Registers
 
             services.AddSingleton<IMainProvider, MainProvider>();
             services.AddSingleton<IConsoleProvider, ConsoleProvider>();
+            services.AddSingleton<IAccountProvider, AccountProvider>();
             services.AddSingleton<ICreditAccountProvider, CreditAccountProvider>();
             services.AddSingleton<IDebitAccountProvider, DebitAccountProvider>();
             services.AddSingleton<ICreditCardProvider, CreditCardProvider>();
             services.AddSingleton<IDebitCardProvider, DebitCardProvider>();
             services.AddSingleton<IBankProvider, BankProvider>();
-            services.AddSingleton<INotifier, ConsoleNotifier>();
-            services.AddSingleton<IRunner, ConsoleRunner>();
 
             services.BuildIoC();
        }

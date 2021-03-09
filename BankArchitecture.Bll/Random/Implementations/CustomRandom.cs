@@ -16,7 +16,7 @@
 
         public static string RandomAccountNumber()
         {
-            string id = string.Empty;
+            var id = string.Empty;
 
             for (var i = 0; i < AccountIdLength; i++)
             {
@@ -28,7 +28,7 @@
 
         public static string RandomCardNumber()
         {
-            string id = string.Empty;
+            var id = string.Empty;
 
             for (var i = 0; i < CardIdLength; i++)
             {

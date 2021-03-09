@@ -1,12 +1,11 @@
-﻿using Bank_Architecture_.Common.Enums;
-using BankArchitecture.Bll.Bank.interfaces;
-using BankArchitecture.Common;
-using BankArchitecture.Common.Enums;
+﻿using BankArchitecture.Bll.Bank.interfaces;
 using BankArchitecture.Common.Models;
+using BankArchitecture.Common.Enums;
 using BankArchitecture.Resources;
 using System.Collections.Generic;
+using BankArchitecture.Providers.Interfaces;
 
-namespace BankArchitecture.Providers
+namespace BankArchitecture.Providers.Implementations
 {
     public class BankProvider : IBankProvider
     {
@@ -14,14 +13,16 @@ namespace BankArchitecture.Providers
         private readonly ICreditAccountProvider creditAccountProvider;
         private readonly IConsoleProvider consoleProvider;
         private readonly IDebitAccountProvider debitAccountProvider;
+        private readonly IAccountProvider accountProvider;
         private MainBank bank;
 
-        public BankProvider(IBankService service, IConsoleProvider consoleProvider, ICreditAccountProvider creditAccountProvider, IDebitAccountProvider debitAccountProvider)
+        public BankProvider(IBankService service, IConsoleProvider consoleProvider, ICreditAccountProvider creditAccountProvider, IAccountProvider accountProvider, IDebitAccountProvider debitAccountProvider)
         {
             this.service = service;
             this.creditAccountProvider = creditAccountProvider;
             this.consoleProvider = consoleProvider;
             this.debitAccountProvider = debitAccountProvider;
+            this.accountProvider = accountProvider;
         }
 
         public void Start(int choose)
@@ -108,7 +109,14 @@ namespace BankArchitecture.Providers
 
                         if (hasTransfer != null)
                         {
-                            ChooseRecipientAccount(hasTransfer);
+                            if (hasTransfer as Dictionary<string, object> != null)
+                            {
+                                ChooseRecipientAccount(hasTransfer);
+                            }
+                            else
+                            {
+                                consoleProvider.ShowMessage(hasTransfer.ToString());
+                            }
                         }
 
                         break;
@@ -129,6 +137,38 @@ namespace BankArchitecture.Providers
             return;
         }
 
+        private void TransferMoneyOperation(Dictionary<string, object> info, object recipient)
+        {
+            if (info[StringConstants.Sender] == recipient || recipient == null)
+            {
+                consoleProvider.ShowMessage(StringConstants.TransferMoneyError);
+            }
+            else
+            {
+                double howMoney = (double)info[StringConstants.Money];
+
+                if (recipient as Card != null)
+                {
+                    ((Card)recipient).Balance += howMoney;
+                }
+                else
+                {
+                    ((Account)recipient).Balance += howMoney;
+                }
+
+                if (info[StringConstants.Sender] as Card != null)
+                {
+                    ((Card)info[StringConstants.Sender]).Balance -= howMoney;
+                }
+                else
+                {
+                    ((Account)info[StringConstants.Sender]).Balance -= howMoney;
+                }
+
+                consoleProvider.ShowMessage(StringConstants.Successfully);
+            }
+        }
+
         private void ChooseRecipientAccount(object information)
         {
             consoleProvider.ShowMessage(service.GetAccountsInfo(bank));
@@ -137,22 +177,40 @@ namespace BankArchitecture.Providers
 
             if (choose >= 0 && choose <= bank.Accounts.Count - 1)
             {
-                Dictionary<string, dynamic> transferInformation = (Dictionary<string, dynamic>)information;
+                Dictionary<string, object> transferInfo = (Dictionary<string, object>)information;
 
-                if (transferInformation[StringConstants.Recipient] == Recipient.Account)
+                if ((Recipient)transferInfo[StringConstants.Recipient] == Recipient.Account)
+                {
+                    TransferMoneyOperation(transferInfo, bank.Accounts[choose]);
+                }
+                else
+                {
+                    TransferMoneyOperation(transferInfo, accountProvider.ChooseRecipientCard(bank.Accounts[choose]));
+                }
+            }
+            else
+            {
+                consoleProvider.ShowMessage(StringConstants.IncorrectInput);
+            }
+
+            /*if (choose >= 0 && choose <= bank.Accounts.Count - 1)
+            {
+                Dictionary<string, object> transferInformation = (Dictionary<string, object>)information;
+
+                if ((Recipient)transferInformation[StringConstants.Recipient] == Recipient.Account)
                 {
                     if (transferInformation[StringConstants.Sender] != bank.Accounts[choose])
                     {
                         if (transferInformation[StringConstants.Sender] as Account != null)
                         {
-                            ((Account)transferInformation[StringConstants.Sender]).Balance -= transferInformation[StringConstants.Money];
+                            ((Account)transferInformation[StringConstants.Sender]).Balance -= (double)transferInformation[StringConstants.Money];
                         }
                         else
                         {
-                            ((Card)transferInformation[StringConstants.Sender]).Balance -= transferInformation[StringConstants.Money];
+                            ((Card)transferInformation[StringConstants.Sender]).Balance -= (double)transferInformation[StringConstants.Money];
                         }
 
-                        bank.Accounts[choose].Balance += transferInformation[StringConstants.Money];
+                        bank.Accounts[choose].Balance += (double)transferInformation[StringConstants.Money];
 
                         consoleProvider.ShowMessage(StringConstants.Successfully);
                     }
@@ -178,14 +236,14 @@ namespace BankArchitecture.Providers
                         {
                             if (transferInformation[StringConstants.Sender] as Account != null)
                             {
-                                ((Account)transferInformation[StringConstants.Sender]).Balance -= transferInformation[StringConstants.Money];
+                                ((Account)transferInformation[StringConstants.Sender]).Balance -= (double)transferInformation[StringConstants.Money];
                             }
                             else
                             {
-                                ((Card)transferInformation[StringConstants.Sender]).Balance -= transferInformation[StringConstants.Money];
+                                ((Card)transferInformation[StringConstants.Sender]).Balance -= (double)transferInformation[StringConstants.Money];
                             }
 
-                            ((Card)transferInformation[StringConstants.Recipient]).Balance += transferInformation[StringConstants.Money];
+                            ((Card)transferInformation[StringConstants.Recipient]).Balance += (double)transferInformation[StringConstants.Money];
                         }
                         else
                         {
@@ -201,7 +259,7 @@ namespace BankArchitecture.Providers
             else
             {
                 consoleProvider.ShowMessage(StringConstants.IncorrectInput);
-            }
+            }*/
         }
 
         private object ChooseAccount()

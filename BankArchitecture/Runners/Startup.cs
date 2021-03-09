@@ -1,31 +1,29 @@
-﻿using BankArchitecture.Notifiers;
-using Microsoft.Extensions.Hosting;
-using System.Threading;
+﻿using Microsoft.Extensions.Hosting;
+using BankArchitecture.Providers.Interfaces;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace BankArchitecture.Runners
 {
     public class Startup : BackgroundService
     {
-        private readonly INotifier notifier;
-        private readonly IRunner runner;
+        private readonly IMainProvider mainProvider;
 
-        public Startup(INotifier notifier, IRunner runner)
+        public Startup(IMainProvider mainProvider)
         {
-            this.notifier = notifier;
-            this.runner = runner;
+            this.mainProvider = mainProvider;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            notifier.Notify("Debug: Start program from ConsoleRunner.");
-            await runner.RunAsync(stoppingToken);
-            notifier.Notify("Program End.");
+            return Task.Factory.StartNew(() => mainProvider.MainActions());
         }
 
-        public void Close(CancellationToken stoppingToken)
+        private void Start()
         {
-            StopAsync(stoppingToken);
+            mainProvider.MainActions();
         }
     }
 }
+
+

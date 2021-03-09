@@ -16,7 +16,6 @@ namespace BankArchitecture.Di
             services.AddSingleton<ICreditAccountService, CreditAccountService>();
             services.AddSingleton<IDebitAccountService, DebitAccountService>();
             services.AddSingleton<IAccountService, AccountService>();
-            services.AddSingleton<ICardService, CardService>();
             services.AddSingleton<IBankService, BankService>();
         }
     }

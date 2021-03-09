@@ -33,7 +33,7 @@ namespace BankArchitecture.Dal
 
             using (FileStream creditAccountsFile = new FileStream(pathToCreditAccount, FileMode.Create)) 
             {
-                await JsonSerializer.SerializeAsync(creditAccountsFile, creditAccounts);
+                JsonSerializer.SerializeAsync(creditAccountsFile, creditAccounts);
             }
 
             using (FileStream debitAccountsFile = new FileStream(pathToDebitAccount, FileMode.Create))

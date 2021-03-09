@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BankArchitecture.Common
+namespace BankArchitecture.Common.Models
 {
     public class DebitAccount : Account
     {

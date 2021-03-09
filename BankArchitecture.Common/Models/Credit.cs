@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BankArchitecture.Common
+namespace BankArchitecture.Common.Models
 {
     public class Credit
     {

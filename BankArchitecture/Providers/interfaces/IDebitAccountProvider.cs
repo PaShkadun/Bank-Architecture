@@ -1,12 +1,10 @@
-﻿using BankArchitecture.Common;
+﻿using BankArchitecture.Common.Models;
 using System.Collections.Generic;
 
-namespace BankArchitecture.Providers
+namespace BankArchitecture.Providers.Interfaces
 {
     public interface IDebitAccountProvider
     {
         object ChooseAction(DebitAccount account);
-
-        void ChooseRecipientCard(DebitAccount account, Dictionary<string, dynamic> information);
     }
 }

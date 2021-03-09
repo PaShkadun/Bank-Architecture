@@ -1,4 +1,4 @@
-﻿namespace BankArchitecture.Providers
+﻿namespace BankArchitecture.Providers.Interfaces
 {
     public interface IMainProvider
     {

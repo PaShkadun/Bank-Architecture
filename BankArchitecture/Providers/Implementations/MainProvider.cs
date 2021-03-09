@@ -1,6 +1,7 @@
-﻿using BankArchitecture.Resources;
+﻿using BankArchitecture.Providers.Interfaces;
+using BankArchitecture.Resources;
 
-namespace BankArchitecture.Providers
+namespace BankArchitecture.Providers.Implementations
 {
     public class MainProvider : IMainProvider
     {

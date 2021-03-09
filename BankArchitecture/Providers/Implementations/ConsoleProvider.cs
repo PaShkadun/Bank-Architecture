@@ -1,8 +1,9 @@
 ﻿using BankArchitecture.Common.Enums;
+using BankArchitecture.Providers.Interfaces;
 using BankArchitecture.Resources;
 using System;
 
-namespace BankArchitecture.Providers
+namespace BankArchitecture.Providers.Implementations
 {
     public class ConsoleProvider : IConsoleProvider
     {
