@@ -11,14 +11,12 @@ namespace BankArchitecture.Providers.Implementations
     {
         private readonly IConsoleProvider consoleProvider;
         private readonly IDebitCardProvider debitCardProvider;
-        private readonly IDebitAccountService debitAccountService;
         private readonly IAccountService accountService;
 
-        public DebitAccountProvider(IDebitAccountService debitAccountService, IAccountService accountService, IConsoleProvider consoleProvider, IDebitCardProvider debitCardProvider)
+        public DebitAccountProvider(IAccountService accountService, IConsoleProvider consoleProvider, IDebitCardProvider debitCardProvider)
         {
             this.consoleProvider = consoleProvider;
             this.debitCardProvider = debitCardProvider;
-            this.debitAccountService = debitAccountService;
             this.accountService = accountService;
         }
 
