@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BankArchitecture.Common\BankArchitecture.Common.csproj" />
+    <ProjectReference Include="..\BankArchitecture.Dal\BankArchitecture.Dal.csproj" />
+  </ItemGroup>
+
+</Project>
