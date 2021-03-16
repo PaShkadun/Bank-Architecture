@@ -1,6 +1,7 @@
 ﻿using BankArchitecture.Bll.Accounts.interfaces;
 using BankArchitecture.Common.Models;
 using BankArchitecture.Providers.Interfaces;
+
 namespace BankArchitecture.Providers.Implementations
 {
     public class AccountProvider : IAccountProvider
